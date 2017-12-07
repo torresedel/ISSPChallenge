@@ -104,7 +104,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                presenter.getResults(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+                if(location!=null) {
+                    presenter.getResults(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+                }
+                else 
+                {
+                    Toast.makeText(MainActivity.this, "Unable to get Location from this device", Toast.LENGTH_SHORT).show();
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
