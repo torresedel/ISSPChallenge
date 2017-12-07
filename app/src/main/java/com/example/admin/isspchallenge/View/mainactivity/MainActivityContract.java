@@ -1,4 +1,4 @@
-package com.example.admin.isspchallenge.View.MainActivity;
+package com.example.admin.isspchallenge.view.mainactivity;
 
 import com.example.admin.isspchallenge.BasePresenter;
 import com.example.admin.isspchallenge.BaseView;
@@ -12,13 +12,13 @@ import java.util.List;
 
 public interface MainActivityContract {
 
-    interface view extends BaseView{
+    interface View extends BaseView{
         void getLocationPermission();
         void getLocation();
         void ShowRecyclerView(List<Response> responsesList);
         boolean isNetworkAvailable();
     }
-    interface Presenter extends BasePresenter<view>{
+    interface Presenter extends BasePresenter<View>{
         void getPermission();
         void getLocationCoord();
         void getResults(String Lat, String Long);

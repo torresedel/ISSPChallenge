@@ -1,4 +1,4 @@
-package com.example.admin.isspchallenge.DataSource;
+package com.example.admin.isspchallenge.datasource;
 
 import com.example.admin.isspchallenge.model.ResultClass;
 

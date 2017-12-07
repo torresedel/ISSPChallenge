@@ -1,4 +1,4 @@
-package com.example.admin.isspchallenge.View.MainActivity.Adapters;
+package com.example.admin.isspchallenge.view.mainactivity.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -24,30 +24,30 @@ import butterknife.ButterKnife;
  */
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    List<Response> responseList;
-    Context context;
+    List<Response> mResponseList;
+    Context mContext;
 
-    public RecyclerViewAdapter(List<Response> responseList) {
-        this.responseList = responseList;
+    public RecyclerViewAdapter(List<Response> mResponseList) {
+        this.mResponseList = mResponseList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.pass_item_list, parent, false);
-        return new ViewHolder(view);
+        mContext = parent.getContext();
+        View mView = LayoutInflater.from(mContext).inflate(R.layout.pass_item_list, parent, false);
+        return new ViewHolder(mView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Response response = responseList.get(position);
-        holder.txtDuration.setText("Duration: "+response.getDuration() + " sec");
-        holder.txtRiseTime.setText("Rise Time: "+getDateCurrentTimeZone(response.getRisetime()));
+        Response mResponse = mResponseList.get(position);
+        holder.txtDuration.setText("Duration: "+mResponse.getDuration() + " sec");
+        holder.txtRiseTime.setText("Rise Time: "+getDateCurrentTimeZone(mResponse.getRisetime()));
     }
 
     @Override
     public int getItemCount() {
-        return responseList.size();
+        return mResponseList.size();
     }
     public  String getDateCurrentTimeZone(long timestamp) {
         try{
@@ -56,8 +56,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             calendar.setTimeInMillis(timestamp * 1000);
             calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date currenTimeZone = (Date) calendar.getTime();
-            return sdf.format(currenTimeZone);
+            Date currentTimeZone = calendar.getTime();
+            return sdf.format(currentTimeZone);
         }catch (Exception e) {
         }
         return "";

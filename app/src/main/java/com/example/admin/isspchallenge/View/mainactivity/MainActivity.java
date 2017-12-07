@@ -1,4 +1,4 @@
-package com.example.admin.isspchallenge.View.MainActivity;
+package com.example.admin.isspchallenge.view.mainactivity;
 
 import android.Manifest;
 import android.content.Context;
@@ -19,7 +19,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.admin.isspchallenge.R;
-import com.example.admin.isspchallenge.View.MainActivity.Adapters.RecyclerViewAdapter;
+import com.example.admin.isspchallenge.view.mainactivity.adapters.RecyclerViewAdapter;
 import com.example.admin.isspchallenge.model.Response;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -31,11 +31,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MainActivityContract.view {
+public class MainActivity extends AppCompatActivity implements MainActivityContract.View {
     public static final String TAG = "MainActivityTAG";
     private static final int MY_PERMISSIONS_REQUEST_READ_Location = 123;
 
-    MainActivityPresenter presenter;
+    MainActivityPresenter mPresenter;
     @BindView(R.id.RecyclerView)
     android.support.v7.widget.RecyclerView RecyclerView;
 
@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        presenter = new MainActivityPresenter();
-        presenter.attach(this);
-        if(presenter.CheckInternetConnection()) {
-            presenter.getPermission();
+        mPresenter = new MainActivityPresenter();
+        mPresenter.attach(this);
+        if(mPresenter.CheckInternetConnection()) {
+            mPresenter.getPermission();
         }
         else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_Location);
             }
         } else {
-            presenter.getLocationCoord();
+            mPresenter.getLocationCoord();
         }
     }
 
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
             @Override
             public void onSuccess(Location location) {
                 if(location!=null) {
-                    presenter.getResults(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+                    mPresenter.getResults(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
                 }
                 else 
                 {
@@ -122,8 +122,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
     @Override
     public void ShowRecyclerView(List<Response> responsesList) {
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(responsesList);
-        RecyclerView.setAdapter(adapter);
+        RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(responsesList);
+        RecyclerView.setAdapter(mAdapter);
         RecyclerView.setLayoutManager(new LinearLayoutManager(this));
         RecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
@@ -134,19 +134,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
             case MY_PERMISSIONS_REQUEST_READ_Location: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                    presenter.getLocationCoord();
+                    mPresenter.getLocationCoord();
                 } else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                    dialog.setTitle("Location Permission");
-                    dialog.setMessage("We Need to get your location to use this app");
-                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    AlertDialog.Builder mDialog = new AlertDialog.Builder(this);
+                    mDialog.setTitle("Location Permission");
+                    mDialog.setMessage("We Need to get your location to use this app");
+                    mDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_Location);
                         }
                     });
-                    dialog.show();
+                    mDialog.show();
                 }
             }
         }
@@ -154,9 +154,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
     @Override
     public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
+        ConnectivityManager mConnectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo activeNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

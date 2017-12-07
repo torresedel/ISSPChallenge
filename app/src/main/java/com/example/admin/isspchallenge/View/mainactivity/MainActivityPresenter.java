@@ -1,6 +1,6 @@
-package com.example.admin.isspchallenge.View.MainActivity;
+package com.example.admin.isspchallenge.view.mainactivity;
 
-import com.example.admin.isspchallenge.DataSource.RetrofitHelper;
+import com.example.admin.isspchallenge.datasource.RetrofitHelper;
 import com.example.admin.isspchallenge.model.ResultClass;
 
 import retrofit2.Callback;
@@ -11,25 +11,25 @@ import retrofit2.Response;
  */
 
 public class MainActivityPresenter implements MainActivityContract.Presenter{
-    MainActivityContract.view view;
+    MainActivityContract.View mView;
     @Override
-    public void attach(MainActivityContract.view view) {
-        this.view = view;
+    public void attach(MainActivityContract.View View) {
+        this.mView = View;
     }
 
     @Override
     public void detach() {
-        this.view = null;
+        this.mView = null;
     }
 
     @Override
     public void getPermission() {
-        view.getLocationPermission();
+        mView.getLocationPermission();
     }
 
     @Override
     public void getLocationCoord() {
-        view.getLocation();
+        mView.getLocation();
     }
 
     @Override
@@ -38,19 +38,19 @@ public class MainActivityPresenter implements MainActivityContract.Presenter{
         getResult.enqueue(new Callback<ResultClass>() {
             @Override
             public void onResponse(retrofit2.Call<ResultClass> call, Response<ResultClass> response) {
-                view.ShowRecyclerView(response.body().getResponse());
+                mView.ShowRecyclerView(response.body().getResponse());
             }
 
             @Override
             public void onFailure(retrofit2.Call<ResultClass> call, Throwable t) {
-                view.showError(t.getMessage());
+                mView.showError(t.getMessage());
             }
         });
     }
 
     @Override
     public boolean CheckInternetConnection() {
-        return view.isNetworkAvailable();
+        return mView.isNetworkAvailable();
     }
 
 
