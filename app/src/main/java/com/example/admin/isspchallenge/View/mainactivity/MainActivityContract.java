@@ -13,15 +13,15 @@ import java.util.List;
 public interface MainActivityContract {
 
     interface View extends BaseView{
-        void getLocationPermission();
+        void checkLocationPermission();
         void getLocation();
-        void ShowRecyclerView(List<Response> responsesList);
+        void showRecyclerView(List<Response> responsesList);
         boolean isNetworkAvailable();
     }
     interface Presenter extends BasePresenter<View>{
         void getPermission();
         void getLocationCoord();
         void getResults(String Lat, String Long);
-        boolean CheckInternetConnection();
+        boolean checkInternetConnection();
     }
 }

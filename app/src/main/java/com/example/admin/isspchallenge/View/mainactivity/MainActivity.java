@@ -44,73 +44,88 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        //Presenter Instantiation
         mPresenter = new MainActivityPresenter();
         mPresenter.attach(this);
-        if(mPresenter.CheckInternetConnection()) {
+
+        //Check for internet connection
+        if (mPresenter.checkInternetConnection()) {
             mPresenter.getPermission();
         }
         else {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle("No Internet Connection");
-            dialog.setMessage("Please Check Internet Connection and Reopen the App");
-            dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
+            mAlertBuilder.setTitle("No Internet Connection");
+            mAlertBuilder.setMessage("Please Check Internet Connection and Reopen the App");
+            mAlertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    CloseApp();
+                    closeApp();
                 }
             });
-            dialog.show();
+            mAlertBuilder.show();
         }
     }
-    public void CloseApp(){
+
+    //Close App
+    public void closeApp() {
         this.finish();
         System.exit(0);
     }
 
+    //Show Error
     @Override
     public void showError(String MSG) {
         Toast.makeText(this, "Error Occurred", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "showError: " + MSG);
     }
 
+    // Toast MSG
     @Override
     public void showToast(String MSG) {
         Toast.makeText(this, MSG, Toast.LENGTH_SHORT).show();
     }
 
-    public void getLocationPermission() {
+    //Check for Location Permissions
+    public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
+
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-
+                //Do nothing
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_Location);
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_READ_Location);
             }
         } else {
             mPresenter.getLocationCoord();
         }
     }
 
+    //Get Current Location of Device
     @Override
     public void getLocation() {
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //Do Nothing
         }
+
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                if(location!=null) {
+
+                if (location != null) {
                     mPresenter.getResults(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
-                }
-                else 
-                {
+                } else {
                     Toast.makeText(MainActivity.this, "Unable to get Location from this device", Toast.LENGTH_SHORT).show();
                 }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -120,38 +135,16 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         });
     }
 
+    //Show Recycler View
     @Override
-    public void ShowRecyclerView(List<Response> responsesList) {
+    public void showRecyclerView(List<Response> responsesList) {
         RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(responsesList);
         RecyclerView.setAdapter(mAdapter);
         RecyclerView.setLayoutManager(new LinearLayoutManager(this));
         RecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_Location: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                    mPresenter.getLocationCoord();
-                } else {
-                    AlertDialog.Builder mDialog = new AlertDialog.Builder(this);
-                    mDialog.setTitle("Location Permission");
-                    mDialog.setMessage("We Need to get your location to use this app");
-                    mDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_Location);
-                        }
-                    });
-                    mDialog.show();
-                }
-            }
-        }
-    }
-
+    //Check if Network Available
     @Override
     public boolean isNetworkAvailable() {
         ConnectivityManager mConnectivityManager

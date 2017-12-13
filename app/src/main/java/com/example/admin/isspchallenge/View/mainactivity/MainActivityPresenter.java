@@ -24,7 +24,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter{
 
     @Override
     public void getPermission() {
-        mView.getLocationPermission();
+        mView.checkLocationPermission();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter{
         getResult.enqueue(new Callback<ResultClass>() {
             @Override
             public void onResponse(retrofit2.Call<ResultClass> call, Response<ResultClass> response) {
-                mView.ShowRecyclerView(response.body().getResponse());
+                mView.showRecyclerView(response.body().getResponse());
             }
 
             @Override
@@ -49,7 +49,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter{
     }
 
     @Override
-    public boolean CheckInternetConnection() {
+    public boolean checkInternetConnection() {
         return mView.isNetworkAvailable();
     }
 
